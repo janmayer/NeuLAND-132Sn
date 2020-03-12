@@ -7,9 +7,9 @@ import ROOT
 
 distances = [15, 35]
 doubleplanes = [8, 12, 30]
-energies = [600]
+energies = [200, 600, 1000]
 erels = [100, 500]
-neutrons = [1, 2, 3, 4, 5]
+neutrons = [1, 2, 3, 4, 5, 6]
 
 
 ROOT.ROOT.EnableThreadSafety()
@@ -46,13 +46,7 @@ def simulate(distance, energy, doubleplane, neutron, erel, overwrite=False):
 
         # Primary Generator
         generator = ROOT.FairPrimaryGenerator()
-        inputfile = "%s/input/%dSn_%dn_%dAMeV_%dkeV.dat" % (
-            vmcworkdir,
-            132 - neutron,
-            neutron,
-            energy,
-            erel,
-        )
+        inputfile = "input/%dSn_%dn_%dAMeV_%dkeV.dat" % (132 - neutron, neutron, energy, erel)
         generator.AddGenerator(ROOT.R3BAsciiGenerator(inputfile))
         run.SetGenerator(generator)
 

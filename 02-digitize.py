@@ -7,9 +7,9 @@ import ROOT
 
 distances = [15, 35]
 doubleplanes = [8, 12, 30]
-energies = [600]
+energies = [200, 600, 1000]
 erels = [100, 500]
-neutrons = [1, 2, 3, 4, 5]
+neutrons = [1, 2, 3, 4, 5, 6]
 
 
 ROOT.ROOT.EnableThreadSafety()
