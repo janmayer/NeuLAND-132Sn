@@ -7,6 +7,24 @@ import ctypes
 import io
 import os
 import sys
+import functools
+import multiprocessing
+
+
+def with_timeout(timeout):
+    def decorator(decorated):
+        @functools.wraps(decorated)
+        def inner(*args, **kwargs):
+            pool = multiprocessing.pool.ThreadPool(1)
+            async_result = pool.apply_async(decorated, args, kwargs)
+            try:
+                return async_result.get(timeout)
+            except multiprocessing.TimeoutError:
+                return
+
+        return inner
+
+    return decorator
 
 
 @contextmanager
