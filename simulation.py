@@ -52,9 +52,10 @@ def simulation(distance, doubleplane, energy, erel, neutron, overwrite=False):
         # Geometry
         cave = ROOT.R3BCave("Cave")
         cave.SetGeometryFileName("r3b_cave_vacuum.geo")
+        #cave.SetGeometryFileName("r3b_cave.geo")
         run.AddModule(cave)
 
-        neuland_position = ROOT.TGeoTranslation(0.0, 0.0, distance + doubleplane * 10.0 / 2.0)
+        neuland_position = ROOT.TGeoTranslation(0.0, 0.0, distance * 100 + doubleplane * 10.0 / 2.0)
         neuland = ROOT.R3BNeuland(doubleplane, neuland_position)
         run.AddModule(neuland)
 
