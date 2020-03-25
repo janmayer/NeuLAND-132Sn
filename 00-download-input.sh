@@ -9,7 +9,7 @@ for energy in 200 600 1000; do
 	done
 done
 
-# Fix problems with input files
+# Fix problems with input files and provide compressed versions
 mkdir -p input
 for energy in 200 600 1000; do
 	for erel in 100 500; do
@@ -22,9 +22,19 @@ for energy in 200 600 1000; do
 			echo $in
 			# Last entry (9999) is duplicated and damaged
 			# Cutoff line to remove masses
-			cat $tmp | head -n -$(expr $n + 2) | cut -c -118 > $in
+			# Remove superfluous event parameters
+			# Remove some leading whitespace
+			cat $tmp | \
+				head -n -$(expr $n + 2) | \
+				cut -c -118 | \
+				sed "s/      ${nx}      0.0      0.0/      ${nx}/g" | \
+				sed "s/^      //g" | \
+				tee $in | gzip --best > "${in}.gz"
+			bzip2 --keep --best ${in}
 			# Remove Sn from input files for simulating with air
-			cat $in | grep -v " -1     50 " | sed "s/      ${nx}      0.0      0.0/      ${n}      0.0      0.0/g" > $out
+			# Correct the number of tracks accordingly
+			cat $in | grep -v " -1     50 " | sed "s/      ${nx}\$/      ${n}/g" | tee $out | gzip --best > "${out}.gz"
+			bzip2 --keep --best ${out}
 		done
 	done
 done

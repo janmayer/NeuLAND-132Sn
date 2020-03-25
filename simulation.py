@@ -1,21 +1,23 @@
 import os
-import pathlib
 import sys
-from helpers import stdout_redirector
-import ROOT
+import subprocess
+import pathlib
 import random
 
 
-def simulation(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite=False):
+def simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite):
+    from helpers import stdout_redirector
+    import ROOT
+
     # Workaround, as the GLAD Magnet is filled with air and the VacuumChamber does not exist
     # The Sn will react a lot in air, so either run in vacuum or remove the Sn (later will screw with E_rel)
     scenarios = {
         "air": {
-            "inp": "input/%dSn_%dn_%dAMeV_%dkeV_noSn.dat",
+            "inp": "input/%dSn_%dn_%dAMeV_%dkeV_noSn.dat.bz2",
             "geo": "r3b_cave.geo"
         },
         "vacuum": {
-            "inp": "input/%dSn_%dn_%dAMeV_%dkeV.dat",
+            "inp": "input/%dSn_%dn_%dAMeV_%dkeV.dat.bz2",
             "geo": "r3b_cave_vacuum.geo"
         },
     }
@@ -92,6 +94,25 @@ def simulation(distance, doubleplane, energy, erel, neutron, physics, scenario, 
         run.Run(10000)
 
 
+# Ugly hack, as FairRun (FairRunSim, FairRunAna) has some undeleteable, not-quite-singleton behavior.
+# As a result, the same process can't be reused after the first run.
+# Here, create a fully standalone process that is fully destroyed afterwards.
+# TODO: Once/If this is fixed, remove this and rename the impl function
+def simulation(distance, doubleplane, energy, erel, neutron, physics, scenario):
+    d = [
+        "python",
+        "simulation.py",
+        str(distance),
+        str(doubleplane),
+        str(energy),
+        str(erel),
+        str(neutron),
+        str(physics),
+        str(scenario),
+    ]
+    subprocess.call(d)
+
+
 if __name__ == "__main__":
     distance = int(sys.argv[1])  # 15
     doubleplane = int(sys.argv[2])  # 30
@@ -100,4 +121,4 @@ if __name__ == "__main__":
     neutron = int(sys.argv[5])  # 4
     physics = sys.argv[6] if len(sys.argv) >= 7 else "inclxx"
     scenario = sys.argv[7] if len(sys.argv) >= 8 else "vacuum"
-    simulation(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite=False)
+    simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite=False)

@@ -1,4 +1,5 @@
-input/
+input/*.dat
+input/*.gz
 output/
 __pycache__/
 .ipynb_checkpoints/

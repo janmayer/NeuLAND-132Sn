@@ -1,6 +1,6 @@
 import joblib
 import subprocess
-# from simulation import simulation
+from simulation import simulation
 
 
 distances = [15, 35]
@@ -10,24 +10,6 @@ erels = [100, 500]
 neutrons = [1, 2, 3, 4, 5, 6]
 physicss = ["bert", "bic", "inclxx"]
 scenarios = ["air", "vacuum"]
-
-
-# Really ugly hack, as FairRun (FairRunSim, FairRunAna) has some undeleteable, not-quite-singleton behavior
-# Here, create a fully standalone process that is fully destroyed afterwards
-# Once/If this is fixed, remove this and import the function
-def simulation(*args, **kwargs):
-    d = [
-        "python",
-        "simulation.py",
-        str(kwargs['distance']),
-        str(kwargs['doubleplane']),
-        str(kwargs['energy']),
-        str(kwargs['erel']),
-        str(kwargs['neutron']),
-        str(kwargs['physics']),
-        str(kwargs['scenario']),
-    ]
-    subprocess.call(d)
 
 
 # Parallel simulations
