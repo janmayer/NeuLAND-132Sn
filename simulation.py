@@ -1,14 +1,13 @@
 import os
 import sys
+import wurlitzer
 import subprocess
 import pathlib
 import random
+import ROOT
 
 
 def simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite):
-    from helpers import stdout_redirector
-    import ROOT
-
     # Workaround, as the GLAD Magnet is filled with air and the VacuumChamber does not exist
     # The Sn will react a lot in air, so either run in vacuum or remove the Sn (later will screw with E_rel)
     scenarios = {
@@ -50,7 +49,7 @@ def simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scena
     os.environ["PHYSICSLIST"] = f"QGSP_{physics.upper()}_HP"
 
     # Write all output to a log file
-    with stdout_redirector(logfile):
+    with open(logfile, "w") as log, wurlitzer.pipes(stdout=log, stderr=wurlitzer.STDOUT):
         # Initialize Simulation
         run = ROOT.FairRunSim()
         run.SetName("TGeant4")

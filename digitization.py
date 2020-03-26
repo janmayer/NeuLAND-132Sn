@@ -1,12 +1,11 @@
 import os
 import sys
+import wurlitzer
 import subprocess
+import ROOT
 
 
 def digitization_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite):
-    from helpers import stdout_redirector
-    import ROOT
-
     basepath = "output/%s-%s/" % (physics.lower(), scenario)
     basename = "%dm_%ddp_%dAMeV_%dkeV_%dn" % (distance, doubleplane, energy, erel, neutron)
     inpfile = basepath + basename + ".simu.root"
@@ -27,7 +26,7 @@ def digitization_impl(distance, doubleplane, energy, erel, neutron, physics, sce
     ROOT.FairLogger.GetLogger().SetLogScreenLevel("WARNING")
 
     # Write all output to a log file
-    with stdout_redirector(logfile):
+    with open(logfile, "w") as log, wurlitzer.pipes(stdout=log, stderr=wurlitzer.STDOUT):
         run = ROOT.FairRunAna()
         run.SetSource(ROOT.FairFileSource(inpfile))
         run.SetSink(ROOT.FairRootFileSink(outfile))
