@@ -1,39 +1,14 @@
 import os
 import sys
-import wurlitzer
 import subprocess
-import pathlib
 import random
 import ROOT
+from helpers import filename_for
 
 
-def simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite):
-    # Workaround, as the GLAD Magnet is filled with air and the VacuumChamber does not exist
-    # The Sn will react a lot in air, so either run in vacuum or remove the Sn (later will screw with E_rel)
-    scenarios = {
-        "air": {
-            "inp": "input/%dSn_%dn_%dAMeV_%dkeV_noSn.dat.bz2",
-            "geo": "r3b_cave.geo"
-        },
-        "vacuum": {
-            "inp": "input/%dSn_%dn_%dAMeV_%dkeV.dat.bz2",
-            "geo": "r3b_cave_vacuum.geo"
-        },
-    }
-
-    inpfile = scenarios[scenario]["inp"] % (132 - neutron, neutron, energy, erel)
-
-    basepath = "output/%s-%s/" % (physics.lower(), scenario)
-    pathlib.Path(basepath).mkdir(parents=True, exist_ok=True)
-
-    basename = "%dm_%ddp_%dAMeV_%dkeV_%dn" % (distance, doubleplane, energy, erel, neutron)
-    parfile = basepath + basename + ".para.root"
-    outfile = basepath + basename + ".simu.root"
-    logfile = basepath + basename + ".simu.log"
-
-    if not os.path.isfile(inpfile):
-        print(f"Input {inpfile} does not exist")
-        return
+def simulation_impl(distance, doubleplane, energy, erel, neutron, physics, overwrite):
+    outfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".simu.root")
+    parfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".para.root")
 
     if not overwrite and os.path.isfile(outfile):
         print(f"Output {outfile} exists and overwriting is disabled")
@@ -48,56 +23,63 @@ def simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scena
     os.environ["CONFIG_DIR"] = vmcworkdir + "/gconfig"
     os.environ["PHYSICSLIST"] = f"QGSP_{physics.upper()}_HP"
 
-    # Write all output to a log file
-    with open(logfile, "w") as log, wurlitzer.pipes(stdout=log, stderr=wurlitzer.STDOUT):
-        # Initialize Simulation
-        run = ROOT.FairRunSim()
-        run.SetName("TGeant4")
-        run.SetStoreTraj(False)
-        run.SetMaterials("media_r3b.geo")
+    # Initialize Simulation
+    run = ROOT.FairRunSim()
+    run.SetName("TGeant4")
+    run.SetStoreTraj(False)
+    run.SetMaterials("media_r3b.geo")
 
-        # Output
-        output = ROOT.FairRootFileSink(outfile)
-        run.SetSink(output)
+    # Output
+    run.SetSink(ROOT.FairRootFileSink(outfile))
 
-        # Primary Generator
-        generator = ROOT.FairPrimaryGenerator()
-        generator.AddGenerator(ROOT.R3BAsciiGenerator(inpfile))
-        run.SetGenerator(generator)
+    # Primary Generator
+    generator = ROOT.FairPrimaryGenerator()
+    psg = ROOT.R3BPhaseSpaceGenerator()
+    psg.SetBeamEnergyDistribution_AMeV(ROOT.R3BDistribution1D.Delta(energy))
+    psg.SetErelDistribution_keV(ROOT.R3BDistribution1D.Delta(erel))
+    psg.AddHeavyIon(50, 132 - neutron)
+    for n in range(neutron):
+        psg.AddParticle(2112)
+    generator.AddGenerator(psg)
+    run.SetGenerator(generator)
 
-        # Geometry
-        cave = ROOT.R3BCave("Cave")
-        cave.SetGeometryFileName(scenarios[scenario]["geo"])
-        run.AddModule(cave)
+    # Geometry
+    cave = ROOT.R3BCave("Cave")
+    cave.SetGeometryFileName("r3b_cave_vacuum.geo")
+    run.AddModule(cave)
 
-        neuland_position = ROOT.TGeoTranslation(0.0, 0.0, distance * 100 + doubleplane * 10.0 / 2.0)
-        neuland = ROOT.R3BNeuland(doubleplane, neuland_position)
-        run.AddModule(neuland)
+    run.AddModule(ROOT.R3BNeutronWindowAndSomeAir(700, distance * 100))
 
-        magnetic_field = ROOT.R3BGladFieldMap("R3BGladMap")
-        magnetic_field.SetScale(-0.6)
-        run.SetField(magnetic_field)
+    neuland_position = ROOT.TGeoTranslation(0.0, 0.0, distance * 100 + doubleplane * 10.0 / 2.0)
+    neuland = ROOT.R3BNeuland(doubleplane, neuland_position)
+    run.AddModule(neuland)
 
-        # Prepare to run
-        run.Init()
-        ROOT.TVirtualMC.GetMC().SetRandom(ROOT.TRandom3(random.randint(0, 10000)))
-        ROOT.TVirtualMC.GetMC().SetMaxNStep(100000)
+    magnetic_field = ROOT.R3BGladFieldMap("R3BGladMap")
+    magnetic_field.SetScale(-0.6)
+    run.SetField(magnetic_field)
 
-        # Runtime Database
-        rtdb = run.GetRuntimeDb()
-        parout = ROOT.FairParRootFileIo(True)
-        parout.open(parfile)
-        rtdb.setOutput(parout)
-        rtdb.saveOutput()
+    # Prepare to run
+    run.Init()
+    ROOT.TVirtualMC.GetMC().SetRandom(ROOT.TRandom3(random.randint(0, 10000)))
+    ROOT.TVirtualMC.GetMC().SetMaxNStep(100000)
 
-        run.Run(10000)
+    # Runtime Database
+    rtdb = run.GetRuntimeDb()
+    parout = ROOT.FairParRootFileIo(True)
+    parout.open(parfile)
+    rtdb.setOutput(parout)
+    rtdb.saveOutput()
+
+    # Run
+    run.Run(10000)
 
 
 # Ugly hack, as FairRun (FairRunSim, FairRunAna) has some undeleteable, not-quite-singleton behavior.
 # As a result, the same process can't be reused after the first run.
 # Here, create a fully standalone process that is fully destroyed afterwards.
 # TODO: Once/If this is fixed, remove this and rename the impl function
-def simulation(distance, doubleplane, energy, erel, neutron, physics, scenario):
+def simulation(distance, doubleplane, energy, erel, neutron, physics):
+    logfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".simu.log")
     d = [
         "python",
         "simulation.py",
@@ -107,9 +89,9 @@ def simulation(distance, doubleplane, energy, erel, neutron, physics, scenario):
         str(erel),
         str(neutron),
         str(physics),
-        str(scenario),
     ]
-    subprocess.call(d)
+    with open(logfile, "w") as log:
+        subprocess.run(d, stdout=log, stderr=log)
 
 
 if __name__ == "__main__":
@@ -119,5 +101,4 @@ if __name__ == "__main__":
     erel = int(sys.argv[4])  # 100
     neutron = int(sys.argv[5])  # 4
     physics = sys.argv[6] if len(sys.argv) >= 7 else "inclxx"
-    scenario = sys.argv[7] if len(sys.argv) >= 8 else "vacuum"
-    simulation_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite=False)
+    simulation_impl(distance, doubleplane, energy, erel, neutron, physics, overwrite=False)

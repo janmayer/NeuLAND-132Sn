@@ -1,68 +1,68 @@
 import os
 import sys
-import wurlitzer
 import subprocess
 import ROOT
+from helpers import filename_for
 
 
-def digitization_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite):
-    basepath = "output/%s-%s/" % (physics.lower(), scenario)
-    basename = "%dm_%ddp_%dAMeV_%dkeV_%dn" % (distance, doubleplane, energy, erel, neutron)
-    inpfile = basepath + basename + ".simu.root"
-    parfile = basepath + basename + ".para.root"
-    outfile = basepath + basename + ".digi.root"
-    logfile = basepath + basename + ".digi.log"
+def digitization_impl(distance, doubleplane, energy, erel, neutron, physics, overwrite):
+    inpfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".simu.root")
+    parfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".para.root")
+    outfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".digi.root")
 
     if not os.path.isfile(inpfile):
         print(f"Input {inpfile} does not exist")
         return
 
-    if not overwrite and os.path.isfile(outfile):
-        print(f"Output {outfile} exists and overwriting is disabled")
-        return
+    if os.path.isfile(outfile):
+        if overwrite:
+            os.remove(outfile)
+        else:
+            print(f"Output {outfile} exists and overwriting is disabled")
+            return
 
     ROOT.ROOT.EnableThreadSafety()
     ROOT.FairLogger.GetLogger().SetLogVerbosityLevel("LOW")
     ROOT.FairLogger.GetLogger().SetLogScreenLevel("WARNING")
 
-    # Write all output to a log file
-    with open(logfile, "w") as log, wurlitzer.pipes(stdout=log, stderr=wurlitzer.STDOUT):
-        run = ROOT.FairRunAna()
-        run.SetSource(ROOT.FairFileSource(inpfile))
-        run.SetSink(ROOT.FairRootFileSink(outfile))
+    run = ROOT.FairRunAna()
+    run.SetSource(ROOT.FairFileSource(inpfile))
+    run.SetSink(ROOT.FairRootFileSink(outfile))
 
-        # Connect Runtime Database
-        rtdb = run.GetRuntimeDb()
-        pario = ROOT.FairParRootFileIo(False)
-        pario.open(parfile)
-        rtdb.setFirstInput(pario)
-        rtdb.setOutput(pario)
-        rtdb.saveOutput()
+    # Connect Runtime Database
+    rtdb = run.GetRuntimeDb()
+    pario = ROOT.FairParRootFileIo(False)
+    pario.open(parfile)
+    rtdb.setFirstInput(pario)
+    rtdb.setOutput(pario)
+    rtdb.saveOutput()
 
-        # Digitize data to hit level and create respective histograms
-        run.AddTask(ROOT.R3BNeulandDigitizer())
+    # Digitize data to hit level and create respective histograms
+    run.AddTask(ROOT.R3BNeulandDigitizer())
 
-        # Build clusters and create respective histograms
-        run.AddTask(ROOT.R3BNeulandClusterFinder())
+    # Build clusters and create respective histograms
+    run.AddTask(ROOT.R3BNeulandClusterFinder())
 
-        # Find the actual primary interaction points and their clusters
-        run.AddTask(ROOT.R3BNeulandPrimaryInteractionFinder())
-        run.AddTask(ROOT.R3BNeulandPrimaryClusterFinder())
+    # Find the actual primary interaction points and their clusters
+    run.AddTask(ROOT.R3BNeulandPrimaryInteractionFinder())
+    run.AddTask(ROOT.R3BNeulandPrimaryClusterFinder())
 
-        # Create spectra
-        run.AddTask(ROOT.R3BNeulandMCMon())
-        run.AddTask(ROOT.R3BNeulandHitMon())
-        run.AddTask(ROOT.R3BNeulandClusterMon())
+    # Create spectra
+    run.AddTask(ROOT.R3BNeulandMCMon())
+    run.AddTask(ROOT.R3BNeulandHitMon())
+    run.AddTask(ROOT.R3BNeulandClusterMon("NeulandPrimaryClusters", "NeulandPrimaryClusterMon"))
+    run.AddTask(ROOT.R3BNeulandClusterMon())
 
-        run.Init()
-        run.Run(0, 0)
+    run.Init()
+    run.Run(0, 0)
 
 
 # Ugly hack, as FairRun (FairRunSim, FairRunAna) has some undeleteable, not-quite-singleton behavior.
 # As a result, the same process can't be reused after the first run.
 # Here, create a fully standalone process that is fully destroyed afterwards.
 # TODO: Once/If this is fixed, remove this and rename the impl function
-def digitization(distance, doubleplane, energy, erel, neutron, physics, scenario):
+def digitization(distance, doubleplane, energy, erel, neutron, physics):
+    logfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".digi.log")
     d = [
         "python",
         "digitization.py",
@@ -72,9 +72,9 @@ def digitization(distance, doubleplane, energy, erel, neutron, physics, scenario
         str(erel),
         str(neutron),
         str(physics),
-        str(scenario),
     ]
-    subprocess.call(d)
+    with open(logfile, "w") as log:
+        subprocess.run(d, stdout=log, stderr=log)
 
 
 if __name__ == "__main__":
@@ -84,5 +84,4 @@ if __name__ == "__main__":
     erel = int(sys.argv[4])  # 100
     neutron = int(sys.argv[5])  # 4
     physics = sys.argv[6] if len(sys.argv) >= 7 else "inclxx"
-    scenario = sys.argv[7] if len(sys.argv) >= 8 else "vacuum"
-    digitization_impl(distance, doubleplane, energy, erel, neutron, physics, scenario, overwrite=True)
+    digitization_impl(distance, doubleplane, energy, erel, neutron, physics, overwrite=True)

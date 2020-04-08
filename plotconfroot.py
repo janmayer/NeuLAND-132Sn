@@ -23,10 +23,14 @@ mpl.rcParams.update({
     "font.monospace": "Source Code Pro",
     "axes.spines.left": True,
     "axes.spines.bottom": True,
-    "axes.spines.top": False,
-    "axes.spines.right": False,
+    "axes.spines.top": True,
+    "axes.spines.right": True,
     "legend.fancybox": False,
     "legend.edgecolor": "#FFFFFF",
+    "xtick.top": True,
+    "xtick.minor.visible": True,
+    "ytick.right": True,
+    "ytick.minor.visible": True,
 })
 
 import matplotlib.pyplot as plt
