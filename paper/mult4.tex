@@ -5,8 +5,8 @@
 \usepackage{graphicx}
 \begin{document}
 \begin{table}
-\captionabove[Neutron separation matrices for multiplicities of 1 to 5 neutrons]{
-Neutron separation matrices for multiplicities of 1 to 5 neutrons.
+\captionabove[Neutron separation matrices for multiplicities of 1 to 4 neutrons]{
+Neutron separation matrices for multiplicities of 1 to 4 neutrons.
 Columns display the neutron multiplicity simulated, rows the neutron multiplicity derived from the calorimetric neutron tracking algorithm.
 Values are given in percent.
 Neutrons were simulated with 200 (left), 600 (center) and 1000 MeV (right matrix).
@@ -14,6 +14,7 @@ NeuLAND with 30 doubleplanes was located at a distance of 15 m to the target.
 Neutrons were generated with a relative energy of 500 keV with respect to a medium heavy projectile fragment.
 The distance between target and NeuLAND was filled with air and a 4\,mm steel window.
 Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
+Note that other maximum multiplicities will result in different efficiencies.
 \label{tab:neutron-separation-matrices}}
 \resizebox{0.32\textwidth}{!}{
 \begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
@@ -22,12 +23,11 @@ Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
 \multicolumn{2}{c|}{MeV} & 1 & 2 & 3 & 4 & 5 \\
 \midrule
 \multirow{6}{*}{\rotatebox[origin=c]{90}{detected}}
- & 0 & 13 & 1 & 0 & 0 & 0 \\
- & 1 & \textbf{82} & 23 & 4 & 0 & 0 \\
- & 2 & 5 & \textbf{66} & 29 & 7 & 1 \\
- & 3 & 0 & 10 & \textbf{56} & 32 & 10 \\
- & 4 & 0 & 0 & 12 & \textbf{48} & 34 \\
- & 5 & 0 & 0 & 0 & 12 & \textbf{54} \\
+ & 0 & 13 & 1 & 0 & 0 \\
+ & 1 & \textbf{83} & 24 & 4 & 1 \\
+ & 2 & 4 & \textbf{67} & 31 & 8 \\
+ & 3 & 0 & 8 & \textbf{56} & 35 \\
+ & 4 & 0 & 0 & 9 & \textbf{57} \\
 \bottomrule
 \end{tabular}}
 \resizebox{0.32\textwidth}{!}{
@@ -37,12 +37,11 @@ Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
 \multicolumn{2}{c|}{MeV} & 1 & 2 & 3 & 4 & 5 \\
 \midrule
 \multirow{6}{*}{\rotatebox[origin=c]{90}{detected}}
- & 0 & 7 & 0 & 0 & 0 & 0 \\
- & 1 & \textbf{81} & 16 & 2 & 0 & 0 \\
- & 2 & 12 & \textbf{73} & 26 & 6 & 1 \\
- & 3 & 0 & 11 & \textbf{63} & 37 & 11 \\
- & 4 & 0 & 0 & 9 & \textbf{51} & 43 \\
- & 5 & 0 & 0 & 0 & 6 & \textbf{45} \\
+ & 0 & 7 & 0 & 0 & 0 \\
+ & 1 & \textbf{81} & 16 & 2 & 0 \\
+ & 2 & 12 & \textbf{73} & 27 & 6 \\
+ & 3 & 0 & 11 & \textbf{63} & 37 \\
+ & 4 & 0 & 0 & 8 & \textbf{57} \\
 \bottomrule
 \end{tabular}}
 \resizebox{0.32\textwidth}{!}{
@@ -52,12 +51,11 @@ Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
 \multicolumn{2}{c|}{MeV} & 1 & 2 & 3 & 4 & 5 \\
 \midrule
 \multirow{6}{*}{\rotatebox[origin=c]{90}{detected}}
- & 0 & 5 & 0 & 0 & 0 & 0 \\
- & 1 & \textbf{78} & 13 & 1 & 0 & 0 \\
- & 2 & 16 & \textbf{74} & 24 & 5 & 1 \\
- & 3 & 0 & 12 & \textbf{66} & 35 & 10 \\
- & 4 & 0 & 0 & 8 & \textbf{55} & 42 \\
- & 5 & 0 & 1 & 1 & 6 & \textbf{47} \\
+ & 0 & 5 & 0 & 0 & 0 \\
+ & 1 & \textbf{82} & 15 & 2 & 0 \\
+ & 2 & 12 & \textbf{76} & 27 & 6 \\
+ & 3 & 0 & 8 & \textbf{66} & 41 \\
+ & 4 & 1 & 1 & 5 & \textbf{54} \\
 \bottomrule
 \end{tabular}}
 \end{table}
