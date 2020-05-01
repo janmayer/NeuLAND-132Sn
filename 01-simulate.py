@@ -3,7 +3,7 @@ from simulation import simulation
 
 
 distances = [15, 35]
-doubleplanes = [8, 12, 30]
+doubleplanes = [8, 12, 20, 30]
 energies = [200, 600, 1000]
 erels = [100, 500, 1000, 2000, 3000]
 neutrons = [1, 2, 3, 4, 5, 6]
