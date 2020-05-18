@@ -9,7 +9,7 @@ def reconstruction_impl(distance, doubleplane, energy, erel, neutron, physics, o
     inpfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".digi.root")
     simfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".simu.root")
     parfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".para.root")
-    cutfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".ncut.root")
+    cutfile = f"output/{physics}/{doubleplane}dp_{energy}AMeV_{neutron}n.ncut.root"
     outfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".reco.root")
 
     if not os.path.isfile(inpfile):
