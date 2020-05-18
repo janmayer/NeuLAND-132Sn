@@ -1,0 +1,53 @@
+\documentclass{{scrartcl}}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{graphicx}
+\begin{document}
+\begin{table}
+\captionabove[Neutron separation matrices for multiplicities of 1 to 1 neutrons]{
+Neutron separation matrices for multiplicities of 1 to 1 neutrons.
+Columns display the neutron multiplicity simulated, rows the neutron multiplicity derived from the calorimetric algorithm.
+Values are given in percent.
+Neutrons were simulated with 200 (left), 600 (center) and 1000 MeV (right matrix).
+NeuLAND with 30 doubleplanes was located at a distance of 15 m to the target.
+Neutrons were generated with a relative energy of 500 keV with respect to a medium heavy projectile fragment.
+The distance between target and NeuLAND was filled with air and a 4\,mm steel window.
+Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
+Note that other maximum multiplicities will result in different efficiencies.
+\label{tab:neutron-separation-matrices}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{200} & \multicolumn{1}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 \\
+\midrule
+\multirow{2}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 13 \\
+ & 1 & \textbf{87} \\
+\bottomrule
+\end{tabular}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{600} & \multicolumn{1}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 \\
+\midrule
+\multirow{2}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 7 \\
+ & 1 & \textbf{93} \\
+\bottomrule
+\end{tabular}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{1000} & \multicolumn{1}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 \\
+\midrule
+\multirow{2}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 5 \\
+ & 1 & \textbf{95} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+\end{document}
