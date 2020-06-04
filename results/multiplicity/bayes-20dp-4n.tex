@@ -1,0 +1,62 @@
+\documentclass{{scrartcl}}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{graphicx}
+\begin{document}
+\begin{table}
+\captionabove[Neutron separation matrices for multiplicities of 1 to 4 neutrons]{
+Neutron separation matrices for multiplicities of 1 to 4 neutrons.
+Columns display the neutron multiplicity simulated, rows the neutron multiplicity derived from the bayes algorithm.
+Values are given in percent.
+Neutrons were simulated with 200 (left), 600 (center) and 1000 MeV (right matrix).
+NeuLAND with 20 doubleplanes was located at a distance of 15 m to the target.
+Neutrons were generated with a relative energy of 500 keV with respect to a medium heavy projectile fragment.
+The distance between target and NeuLAND was filled with air and a 4\,mm steel window.
+Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
+Note that other maximum multiplicities will result in different efficiencies.
+\label{tab:neutron-separation-matrices}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{200} & \multicolumn{4}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 & 2 & 3 & 4 \\
+\midrule
+\multirow{5}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 13 & 2 & 0 & 0 \\
+ & 1 & \textbf{28} & 7 & 2 & 0 \\
+ & 2 & 57 & \textbf{42} & 16 & 5 \\
+ & 3 & 2 & 41 & \textbf{35} & 16 \\
+ & 4 & 0 & 8 & 47 & \textbf{79} \\
+\bottomrule
+\end{tabular}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{600} & \multicolumn{4}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 & 2 & 3 & 4 \\
+\midrule
+\multirow{5}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 11 & 1 & 0 & 0 \\
+ & 1 & \textbf{60} & 20 & 5 & 1 \\
+ & 2 & 29 & \textbf{42} & 20 & 7 \\
+ & 3 & 1 & 33 & \textbf{38} & 21 \\
+ & 4 & 0 & 4 & 37 & \textbf{71} \\
+\bottomrule
+\end{tabular}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{1000} & \multicolumn{4}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 & 2 & 3 & 4 \\
+\midrule
+\multirow{5}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 9 & 1 & 0 & 0 \\
+ & 1 & \textbf{71} & 25 & 6 & 1 \\
+ & 2 & 19 & \textbf{47} & 23 & 8 \\
+ & 3 & 0 & 25 & \textbf{39} & 22 \\
+ & 4 & 1 & 2 & 31 & \textbf{68} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+\end{document}

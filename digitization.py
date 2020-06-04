@@ -34,8 +34,6 @@ def digitization_impl(distance, doubleplane, energy, erel, neutron, physics, ove
     pario = ROOT.FairParRootFileIo(False)
     pario.open(parfile)
     rtdb.setFirstInput(pario)
-    rtdb.setOutput(pario)
-    rtdb.saveOutput()
 
     # Digitize data to hit level and create respective histograms
     run.AddTask(ROOT.R3BNeulandDigitizer())

@@ -25,7 +25,7 @@ def reconstruction_impl(distance, doubleplane, energy, erel, neutron, physics, o
 
     ROOT.ROOT.EnableThreadSafety()
     ROOT.FairLogger.GetLogger().SetLogVerbosityLevel("LOW")
-    ROOT.FairLogger.GetLogger().SetLogScreenLevel("WARNING")
+    ROOT.FairLogger.GetLogger().SetLogScreenLevel("INFO")
 
     run = ROOT.FairRunAna()
     ffs = ROOT.FairFileSource(inpfile)
@@ -41,17 +41,20 @@ def reconstruction_impl(distance, doubleplane, energy, erel, neutron, physics, o
     pario2 = ROOT.FairParRootFileIo(False)
     pario2.open(cutfile)
     rtdb.setSecondInput(pario2)
-    rtdb.setOutput(pario)
-    rtdb.saveOutput()
 
     # Calorimetric Reco
     run.AddTask(ROOT.R3BNeulandMultiplicityCalorimetric("NeulandClusters", "NeulandMultiplicity"))
     run.AddTask(ROOT.R3BNeulandNeutronsRValue(energy, "NeulandMultiplicity", "NeulandClusters", "NeulandNeutrons"))
     run.AddTask(ROOT.R3BNeulandNeutronReconstructionMon("NeulandNeutrons", "NeulandNeutronReconstructionMon"))
 
+    # Bayes Reco
+    run.AddTask(ROOT.R3BNeulandMultiplicityBayes("NeulandClusters", "NeulandMultiplicityBayes"))
+    run.AddTask(ROOT.R3BNeulandNeutronsRValue(energy, "NeulandMultiplicityBayes", "NeulandClusters", "NeulandNeutronsBayes"))
+    run.AddTask(ROOT.R3BNeulandNeutronReconstructionMon("NeulandNeutronsBayes", "NeulandNeutronReconstructionMonBayes"))
+
     # Perfect Reco
     run.AddTask(ROOT.R3BNeulandMultiplicityCheat("NeulandPrimaryHits", "NeulandMultiplicityCheat"))
-    run.AddTask(ROOT.R3BNeulandNeutronsCheat("NeulandMultiplicityCheat", "NeulandPrimaryClusters", "NeulandNeutronsCheat"))
+    run.AddTask(ROOT.R3BNeulandNeutronsCheat("NeulandMultiplicityCheat", "NeulandPrimaryHits", "NeulandNeutronsCheat"))
     run.AddTask(ROOT.R3BNeulandNeutronReconstructionMon("NeulandNeutronsCheat", "NeulandNeutronReconstructionMonCheat"))
 
     run.Init()
