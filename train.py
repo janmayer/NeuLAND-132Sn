@@ -54,7 +54,7 @@ def train_impl(doubleplane, energy, nmax, physics, overwrite):
     # Train tasks
     trn = ROOT.R3BNeulandMultiplicityCalorimetricTrain("NeulandClusters", "NeulandPrimaryTracks")
     trn.SetEdepOpt(energy, 25, energy * 0.25, energy * 1.75)
-    trn.SetWeight(0.5)
+    # trn.SetWeight(0.5)
     run.AddTask(trn)
     
     run.AddTask(ROOT.R3BNeulandMultiplicityBayesTrain("NeulandClusters", "NeulandPrimaryTracks"))
