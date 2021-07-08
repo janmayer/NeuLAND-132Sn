@@ -1,0 +1,68 @@
+\documentclass{{scrartcl}}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{graphicx}
+\begin{document}
+\begin{table}
+\captionabove[Neutron separation matrices for multiplicities of 1 to 6 neutrons]{
+Neutron separation matrices for multiplicities of 1 to 6 neutrons.
+Columns display the neutron multiplicity simulated, rows the neutron multiplicity derived from the calorimetric algorithm.
+Values are given in percent.
+Neutrons were simulated with 200 (left), 600 (center) and 1000 MeV (right matrix).
+NeuLAND with 30 doubleplanes was located at a distance of 35 m to the target.
+Neutrons were generated with a relative energy of 500 keV with respect to a medium heavy projectile fragment.
+The distance between target and NeuLAND was filled with air and a 4\,mm steel window.
+Simulated with Geant4 using the \texttt{QGSP\_INCLXX\_HP} physics list.
+Note that other maximum multiplicities will result in different efficiencies.
+\label{tab:neutron-separation-matrices}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{200} & \multicolumn{6}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
+\multirow{7}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 53 & 3 & 0 & 0 & 0 & 0 \\
+ & 1 & \textbf{45} & 47 & 10 & 2 & 0 & 0 \\
+ & 2 & 2 & \textbf{40} & 31 & 9 & 2 & 0 \\
+ & 3 & 0 & 9 & \textbf{40} & 25 & 9 & 2 \\
+ & 4 & 0 & 0 & 17 & \textbf{37} & 23 & 9 \\
+ & 5 & 0 & 0 & 1 & 22 & \textbf{33} & 21 \\
+ & 6 & 0 & 0 & 0 & 4 & 33 & \textbf{68} \\
+\bottomrule
+\end{tabular}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{600} & \multicolumn{6}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
+\multirow{7}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 9 & 1 & 0 & 0 & 0 & 0 \\
+ & 1 & \textbf{87} & 26 & 5 & 1 & 0 & 0 \\
+ & 2 & 4 & \textbf{61} & 28 & 8 & 2 & 0 \\
+ & 3 & 0 & 12 & \textbf{49} & 29 & 9 & 3 \\
+ & 4 & 0 & 0 & 18 & \textbf{44} & 28 & 12 \\
+ & 5 & 0 & 0 & 0 & 18 & \textbf{40} & 29 \\
+ & 6 & 0 & 0 & 0 & 1 & 21 & \textbf{57} \\
+\bottomrule
+\end{tabular}}
+\resizebox{0.32\textwidth}{!}{
+\begin{tabular}{cc|S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]S[table-format=2]}
+\toprule
+\multicolumn{2}{c|}{1000} & \multicolumn{6}{c}{generated} \\
+\multicolumn{2}{c|}{MeV} &1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
+\multirow{7}{*}{\rotatebox[origin=c]{90}{detected}}
+ & 0 & 8 & 1 & 0 & 0 & 0 & 0 \\
+ & 1 & \textbf{86} & 22 & 4 & 1 & 0 & 0 \\
+ & 2 & 6 & \textbf{64} & 26 & 7 & 1 & 0 \\
+ & 3 & 0 & 13 & \textbf{55} & 30 & 10 & 2 \\
+ & 4 & 0 & 0 & 15 & \textbf{47} & 32 & 12 \\
+ & 5 & 0 & 0 & 0 & 16 & \textbf{42} & 35 \\
+ & 6 & 0 & 0 & 0 & 0 & 15 & \textbf{50} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+\end{document}

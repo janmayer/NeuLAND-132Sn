@@ -9,7 +9,7 @@ def reconstruction_impl(distance, doubleplane, energy, erel, neutron, physics, o
     inpfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".digi.root")
     simfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".simu.root")
     parfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".para.root")
-    cutfile = f"output/{physics}/{doubleplane}dp_{energy}AMeV_{neutron}n.ncut.root"
+    cutfile = f"output/{physics}/{distance}m_{doubleplane}dp_{energy}AMeV_{neutron}n.ncut.root"
     outfile = filename_for(distance, doubleplane, energy, erel, neutron, physics, ".reco.root")
 
     if not os.path.isfile(inpfile):
@@ -49,7 +49,14 @@ def reconstruction_impl(distance, doubleplane, energy, erel, neutron, physics, o
 
     # Bayes Reco
     run.AddTask(ROOT.R3BNeulandMultiplicityBayes("NeulandClusters", "NeulandMultiplicityBayes"))
-    run.AddTask(ROOT.R3BNeulandNeutronsRValue(energy, "NeulandMultiplicityBayes", "NeulandClusters", "NeulandNeutronsBayes"))
+    run.AddTask(
+        ROOT.R3BNeulandNeutronsRValue(
+            energy,
+            "NeulandMultiplicityBayes",
+            "NeulandClusters",
+            "NeulandNeutronsBayes",
+        )
+    )
     run.AddTask(ROOT.R3BNeulandNeutronReconstructionMon("NeulandNeutronsBayes", "NeulandNeutronReconstructionMonBayes"))
 
     # Perfect Reco

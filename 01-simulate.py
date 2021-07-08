@@ -18,7 +18,8 @@ joblib.Parallel(n_jobs=-1, backend="loky", verbose=11)(
         energy=energy,
         erel=erel,
         neutron=neutron,
-        physics=physics)
+        physics=physics,
+    )
     for distance in distances
     for energy in energies
     for doubleplane in doubleplanes
